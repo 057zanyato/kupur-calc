@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Калькулятор купюр и монет</title>
+  <style>
+    body {
+      background: #e6e6e6;
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    .container {
+      width: 410px;
+      margin: 0 auto;
+      background: #e3f1f6;
+      border-radius: 6px;
+      box-shadow: 0 2px 10px #0001;
+      padding: 12px 0 8px 0;
+      border: 2px solid #b7cddc;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #e3f1f6;
+      border-radius: 6px 6px 0 0;
+      overflow: hidden;
+      font-size: 1em;
+    }
+    th, td {
+      padding: 3px 3px;
+      text-align: right;
+      border: none;
+    }
+    th {
+      background: #388495;
+      color: #fff;
+      font-weight: bold;
+      font-size: 1em;
+    }
+    .btns-col {
+      min-width: 92px;
+      width: 92px;
+      text-align: right;
+    }
+    .btns-group {
+      display: flex;
+      flex-direction: row;
+      gap: 2px;
+      justify-content: flex-end;
+    }
+    .quick-btn {
+      font-size: 0.96em;
+      padding: 2px 4px;
+      border-radius: 3px;
+      background: #e1eaf0;
+      border: 1px solid #b7cddc;
+      color: #215768;
+      cursor: pointer;
+      transition: background 0.12s, color 0.12s;
+      outline: none;
+      min-width: 28px;
+    }
+    .quick-btn.active, .quick-btn:active {
+      background: #cbe3ff;
+      color: #16518c;
+    }
+    .denom-col {
+      min-width: 62px;
+      width: 62px;
+      color: #225;
+    }
+    .middle-col {
+      background: #d2e2e8;
+      color: #222;
+    }
+    .middle-col input {
+      width: 38px;
+      padding: 2px 2px;
+      text-align: right;
+      border: 1px solid #aaa;
+      border-radius: 3px;
+      font-size: 1em;
+      background: #fff;
+    }
+    .sum-col {
+      font-weight: bold;
+      color: #2d3b33;
+      min-width: 64px;
+    }
+    .unit {
+      font-size: 0.96em;
+      color: #888;
+      margin-left: 2px;
+    }
+    .footer-row {
+      background: #e3f1f6;
+      font-weight: bold;
+    }
+    .footer-label {
+      text-align: left;
+      padding-left: 7px;
+      font-size: 0.97em;
+      color: #225;
+    }
+    .ctrl-row {
+      background: #e3f1f6;
+    }
+    .btn {
+      font-size: 1em;
+      border: none;
+      border-radius: 4px;
+      padding: 3px 14px;
+      margin: 2px 0;
+      cursor: pointer;
+      transition: background 0.15s;
+      font-weight: bold;
+    }
+    .btn-calc {
+      background: #21a03c;
+      color: #fff;
+    }
+    .btn-calc:hover {
+      background: #176d28;
+    }
+    .btn-clear {
+      background: #d03a34;
+      color: #fff;
+    }
+    .btn-clear:hover {
+      background: #a22018;
+    }
+    .result-label {
+      color: #21a03c;
+      font-weight: bold;
+      font-size: 1.07em;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+    .diff-label {
+      color: #a03d21;
+      font-weight: bold;
+      font-size: 1.07em;
+      margin-left: 8px;
+      margin-right: 10px;
+      vertical-align: middle;
+      display: inline-block;
+      min-width: 92px;
+      text-align: left;
+    }
+    .result-box, .diff-box {
+      display: inline-block;
+      border: 2px solid #3a7c8c;
+      border-radius: 5px;
+      background: #fff;
+      font-size: 1.08em;
+      font-weight: bold;
+      text-align: right;
+      margin-left: 8px;
+      width: 88px;
+      padding: 2px 4px;
+    }
+    .diff-box {
+      border-color: #a03d21;
+      color: #a03d21;
+      width: 76px;
+    }
+    .diff-hr-row {
+      background: #e3f1f6;
+      padding: 0;
+    }
+    .diff-flex-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 0 0;
+      padding: 2px 0 2px 0;
+    }
+    .diff-title {
+      min-width: 62px;
+      text-align: left;
+      font-weight: bold;
+      color: #225;
+      font-size: 0.97em;
+      margin-left: 7px;
+      margin-right: 6px;
+    }
+    .sum-sverki-box {
+      display: inline-block;
+      border: 2px solid #a03d21;
+      border-radius: 5px;
+      background: #fff;
+      font-size: 1.09em;
+      font-weight: bold;
+      text-align: right;
+      min-width: 90px;
+      padding: 2px 4px;
+      color: #a03d21;
+      margin-left: 0;
+    }
+    .info-row {
+      margin-top: 5px;
+      padding-left: 2px;
+      font-size: 0.98em;
+      color: #444;
+    }
+    .info-lbl {
+      margin-right: 10px;
+    }
+    .info-row input[type="text"] {
+      width: 32px;
+      text-align: center;
+      background: #eee;
+      border: 1px solid #bbb;
+      border-radius: 3px;
+      font-size: 1em;
+    }
+    @media (max-width: 540px) {
+      .container { width: 99vw; }
+      table { font-size: 0.97em; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <form id="cashForm" autocomplete="off" onsubmit="return false;">
+      <table>
+        <thead>
+          <tr>
+            <th class="btns-col"></th>
+            <th class="denom-col">Номинал</th>
+            <th class="middle-col">Кол-во</th>
+            <th>Сумма</th>
+          </tr>
+        </thead>
+        <tbody id="cashTable">
+          <!-- строки добавляются скриптом -->
+        </tbody>
+        <tr class="footer-row">
+          <td colspan="2" class="footer-label">Итого</td>
+          <td colspan="2" class="sum-col" id="totalSum" style="font-size:1.13em;">0 ₴</td>
+        </tr>
+        <tr class="diff-hr-row">
+          <td colspan="4" style="padding:0;">
+            <div class="diff-flex-row">
+              <span class="diff-title">Разница</span>
+              <span class="diff-label" id="diffVal">0,00 Грн</span>
+              <input type="number" step="0.01" id="diffInput" class="sum-sverki-box" placeholder="Сверка">
+              <span class="unit">₴</span>
+            </div>
+          </td>
+        </tr>
+        <tr class="ctrl-row">
+          <td colspan="4" style="text-align: left;">
+            <button class="btn btn-calc" id="calcBtn" type="button">Посчитать</button>
+            <span class="result-label" id="resultSum">0,00 Грн</span>
+            <button class="btn btn-clear" id="clearBtn" type="button">Очистить</button>
+          </td>
+        </tr>
+      </table>
+      <div class="info-row">
+        <span class="info-lbl">Купюр: <input type="text" id="billsCount" readonly></span>
+        <span class="info-lbl">Монет: <input type="text" id="coinsCount" readonly></span>
+      </div>
+    </form>
+  </div>
+  <script>
+    // Новый список номиналов, coins: true — монета, иначе купюра
+    const denominations = [
+      { value: 1000, label: "1000 ₴", coins: false },
+      { value: 500, label: "500 ₴", coins: false },
+      { value: 200, label: "200 ₴", coins: false },
+      { value: 100, label: "100 ₴", coins: false },
+      { value: 50, label: "50 ₴", coins: false },
+      { value: 20, label: "20 ₴", coins: false },
+      { value: 10, label: "10 ₴", coins: false },
+      { value: 5, label: "5 ₴", coins: true },
+      { value: 2, label: "2 ₴", coins: true },
+      { value: 1, label: "1 ₴", coins: true },
+      { value: 0.5, label: "0,50 ₴", coins: true }
+    ];
+
+    // Кнопки для быстрого ввода (0, +1, +5, +10, +20)
+    const quickBtns = [
+      { label: "0", val: "set0" },
+      { label: "+1", val: 1 },
+      { label: "+5", val: 5 },
+      { label: "+10", val: 10 },
+      { label: "+20", val: 20 }
+    ];
+
+    // Генерация строк таблицы
+    const tbody = document.getElementById('cashTable');
+    denominations.forEach((denom, i) => {
+      const tr = document.createElement('tr');
+      let quickBtnHtml = `<span class="btns-group">`;
+      quickBtns.forEach(btn =>
+        quickBtnHtml += `<button type="button" class="quick-btn" data-row="${i}" data-delta="${btn.val}">${btn.label}</button>`
+      );
+      quickBtnHtml += `</span>`;
+      tr.innerHTML = `
+        <td class="btns-col">${quickBtnHtml}</td>
+        <td class="denom-col">${denom.label}</td>
+        <td class="middle-col">
+          <input type="number" min="0" step="1" value="0" class="count" data-index="${i}">
+          <span class="unit">шт.</span>
+        </td>
+        <td class="sum-col"><span class="sum" id="sum${i}">0</span> <span class="unit">₴</span></td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    // Получаем все поля
+    const counts = document.querySelectorAll('.count');
+    const sumFields = document.querySelectorAll('.sum');
+    const totalSum = document.getElementById('totalSum');
+    const resultSum = document.getElementById('resultSum');
+    const diffInput = document.getElementById('diffInput');
+    const diffVal = document.getElementById('diffVal');
+    const billsCount = document.getElementById('billsCount');
+    const coinsCount = document.getElementById('coinsCount');
+    const calcBtn = document.getElementById('calcBtn');
+    const clearBtn = document.getElementById('clearBtn');
+
+    // Формат с двумя знаками после запятой (с заменой точки на запятую)
+    function formatSum(num) {
+      return (num ? num.toFixed(2) : "0,00").replace('.', ',');
+    }
+
+    // Основная функция пересчета
+    function recalc() {
+      let total = 0;
+      let bills = 0, coins = 0;
+      counts.forEach((input, idx) => {
+        const cnt = parseInt(input.value, 10) || 0;
+        const val = denominations[idx].value;
+        const sum = cnt * val;
+        sumFields[idx].textContent = sum ? formatSum(sum) : '0';
+        total += sum;
+        if (denominations[idx].coins) coins += cnt;
+        else bills += cnt;
+      });
+      totalSum.textContent = total ? formatSum(total) + ' ₴' : '0 ₴';
+      resultSum.textContent = formatSum(total) + ' Грн';
+      billsCount.value = bills;
+      coinsCount.value = coins;
+      // Разница если введено
+      let diff = '';
+      if (diffInput.value.length) {
+        diff = (total - parseFloat(diffInput.value.replace(',', '.'))).toFixed(2).replace('.', ',');
+        diffVal.textContent = (diff > 0 ? '+' : '') + diff + ' Грн';
+      } else {
+        diffVal.textContent = '0,00 Грн';
+      }
+    }
+
+    // Обработчики изменения значений
+    counts.forEach(i => {
+      i.addEventListener('input', recalc);
+    });
+    diffInput.addEventListener('input', recalc);
+
+    // Быстрые кнопки (0, +1, ...)
+    document.querySelectorAll('.quick-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const row = parseInt(this.dataset.row, 10);
+        const delta = this.dataset.delta;
+        const input = counts[row];
+        let val = parseInt(input.value, 10) || 0;
+        if (delta === "set0") {
+          val = 0;
+        } else {
+          val += parseInt(delta, 10);
+        }
+        if(val < 0) val = 0;
+        input.value = val;
+        input.dispatchEvent(new Event('input'));
+        input.focus();
+        input.select();
+      });
+    });
+
+    // Навигация стрелками вверх/вниз
+    counts.forEach((inp, idx, arr) => {
+      inp.addEventListener('keydown', e => {
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          if (idx < arr.length - 1) {
+            arr[idx + 1].focus();
+            arr[idx + 1].select();
+          }
+        }
+        if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          if (idx > 0) {
+            arr[idx - 1].focus();
+            arr[idx - 1].select();
+          }
+        }
+      });
+    });
+
+    // Кнопка "Посчитать" — выделяет итоговую сумму
+    calcBtn.addEventListener('click', () => {
+      recalc();
+      resultSum.style.background = "#e5ffe5";
+      setTimeout(() => {
+        resultSum.style.background = "";
+      }, 550);
+    });
+
+    // Кнопка "Очистить" — сбрасывает всё
+    clearBtn.addEventListener('click', () => {
+      counts.forEach(i => i.value = 0);
+      diffInput.value = '';
+      recalc();
+      resultSum.style.background = "";
+      diffVal.textContent = '0,00 Грн';
+    });
+
+    // Начальный пересчет
+    recalc();
+  </script>
+</body>
+</html>
